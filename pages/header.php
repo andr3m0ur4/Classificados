@@ -19,8 +19,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Cadastre-se</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <?php if (isset($_SESSION['login']) && !empty($_SESSION['login'])) : ?>
+                        <li class="nav-item"><a class="nav-link" href="./meus-anuncios.php">Meus Anúncios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./sair.php">Sair</a></li>
+                    <?php else : ?>
+                        <li class="nav-item"><a class="nav-link" href="./cadastre-se.php">Cadastre-se</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./login.php">Login</a></li>
+                    <?php endif ?>
                 </ul>
             </div>
         </div>

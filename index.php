@@ -1,5 +1,7 @@
 <?php
 
+    require './config.php';
+
     require './pages/header.php';
 
     require './pages/index.php';
