@@ -15,10 +15,19 @@
         <tbody>
             <?php foreach ($anuncios as $anuncio) : ?>
                 <tr>
-                    <td><img src="./assets/images/anuncios/<?= $anuncio->url ?>" alt="Foto Anúncio"></td>
+                    <td>
+                        <?php if (!empty($anuncio->url)) : ?>
+                            <img src="./assets/images/anuncios/<?= $anuncio->url ?>" alt="Foto Anúncio">
+                        <?php else : ?>
+                            <img src="./assets/images/anuncios/default.jpg" height="75" alt="Foto Anúncio">
+                        <?php endif ?>
+                    </td>
                     <td><?= $anuncio->titulo ?></td>
                     <td>R$ <?= number_format($anuncio->valor, 2, ',', '.') ?></td>
-                    <td></td>
+                    <td>
+                        <a href="./editar-anuncio.php?id=<?= $anuncio->id ?>" class="btn btn-primary">Editar</a>
+                        <a href="./excluir-anuncio.php?id=<?= $anuncio->id ?>" class="btn btn-danger">Excluir</a>
+                    </td>
                 </tr>
             <?php endforeach ?>
         </tbody>
