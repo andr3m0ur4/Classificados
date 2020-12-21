@@ -7,6 +7,20 @@
         </div>
     <?php endif ?>
 
+    <?php if (!is_null($sucesso)) : ?>
+        <?php if ($sucesso) : ?>
+            <div class="alert alert-success">
+                <strong>Parabéns!</strong> Cadastrado com sucesso.
+                <a href="./login.php" class="alert-link">Faça o login agora</a>
+            </div>
+        <?php else : ?>
+            <div class="alert alert-warning">
+                Este usuário já existe!
+                <a href="./login.php" class="alert-link">Faça o login agora</a>
+            </div>
+        <?php endif ?>
+    <?php endif ?>
+
     <form method="POST">
         <div class="form-group">
             <label for="nome">Nome:</label>
@@ -24,6 +38,6 @@
             <label for="telefone">Telefone:</label>
             <input type="tel" name="telefone" id="telefone" class="form-control">
         </div>
-        <button class="btn btn-secondary">Cadastrar</button>
+        <button class="btn btn-outline-dark">Cadastrar</button>
     </form>
 </main>

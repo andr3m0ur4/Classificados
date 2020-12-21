@@ -20,6 +20,7 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav ml-auto">
                     <?php if (isset($_SESSION['login']) && !empty($_SESSION['login'])) : ?>
+                        <li class="navbar-text">( <?= $_SESSION['nome'] ?> )</li>
                         <li class="nav-item"><a class="nav-link" href="./meus-anuncios.php">Meus Anúncios</a></li>
                         <li class="nav-item"><a class="nav-link" href="./sair.php">Sair</a></li>
                     <?php else : ?>
