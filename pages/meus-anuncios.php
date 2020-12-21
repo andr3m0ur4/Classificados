@@ -17,7 +17,7 @@
                 <tr>
                     <td><img src="./assets/images/anuncios/<?= $anuncio->url ?>" alt="Foto Anúncio"></td>
                     <td><?= $anuncio->titulo ?></td>
-                    <td>R$ <?= number_format($anuncio->titulo) ?></td>
+                    <td>R$ <?= number_format($anuncio->valor, 2, ',', '.') ?></td>
                     <td></td>
                 </tr>
             <?php endforeach ?>

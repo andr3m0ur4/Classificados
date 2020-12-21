@@ -8,8 +8,8 @@
             $dados = [];
 
             $sql = "SELECT anuncios.*, anuncios_imagens.url as url FROM anuncios
-                INNER JOIN anuncios_imagens ON anuncios_imagens.id_anuncio = anuncio.id
-                WHERE id = :id
+                LEFT JOIN anuncios_imagens ON anuncios_imagens.id_anuncio = anuncios.id
+                WHERE anuncios.id = :id
             ";
             $sql = $pdo->prepare($sql);
             $sql->bindValue(':id', $_SESSION['login']);
@@ -20,5 +20,21 @@
             }
 
             return $dados;
+        }
+
+        public function adicionarAnuncio($titulo, $categoria, $valor, $descricao, $estado)
+        {
+            global $pdo;
+
+            $sql = "INSERT INTO anuncios (titulo, id_categoria, id_usuario, descricao, valor, estado)
+                VALUES (:titulo, :id_categoria, :id_usuario, :descricao, :valor, :estado)";
+            $sql = $pdo->prepare($sql);
+            $sql->bindValue(':titulo', $titulo);
+            $sql->bindValue(':id_categoria', $categoria);
+            $sql->bindValue(':id_usuario', $_SESSION['login']);
+            $sql->bindValue(':descricao', $descricao);
+            $sql->bindValue(':valor', $valor);
+            $sql->bindValue(':estado', $estado);
+            $sql->execute();
         }
     }
