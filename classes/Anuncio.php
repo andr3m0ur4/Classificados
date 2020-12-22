@@ -2,9 +2,8 @@
 
     class Anuncio
     {
-        public function obterUltimosAnuncios($pagina, $qtd)
+        public function obterUltimosAnuncios($pagina, $qtd, $filtros)
         {
-            global $pdo;
             $offset = ($pagina - 1) * $qtd;
             $dados = [];
 
@@ -14,11 +13,13 @@
                     (SELECT url FROM anuncios_imagens WHERE id_anuncio = anuncios.id LIMIT 1) AS url
                 FROM anuncios
                 INNER JOIN categorias ON categorias.id = anuncios.id_categoria
-                ORDER BY anuncios.id DESC
-                LIMIT $offset, $qtd
             ";
-            $sql = $pdo->prepare($sql);
-            $sql->execute();
+
+            $sql = $this->construirConsulta($sql, $filtros);
+
+            $sql .= " ORDER BY anuncios.id DESC LIMIT $offset, $qtd";
+            
+            $sql = $this->prepararConsulta($sql, $filtros);
 
             if ($sql->rowCount() > 0) {
                 $dados = $sql->fetchAll(PDO::FETCH_OBJ);
@@ -26,6 +27,7 @@
 
             return $dados;
         }
+
         public function obterMeusAnuncios()
         {
             global $pdo;
@@ -71,12 +73,13 @@
             return $dado;
         }
 
-        public function obterTotalAnuncios()
+        public function obterTotalAnuncios($filtros)
         {
             global $pdo;
 
-            $sql = "SELECT COUNT(*) AS contador FROM anuncios";
-            $sql = $pdo->query($sql);
+            $sql = "SELECT COUNT(*) AS contador FROM anuncios ";
+            $sql = $this->construirConsulta($sql, $filtros);
+            $sql = $this->prepararConsulta($sql, $filtros);
             $total = $sql->fetch(PDO::FETCH_OBJ)->contador;
 
             return $total;
@@ -222,5 +225,51 @@
             $sql->execute();
 
             return $id_anuncio;
+        }
+
+        private function construirConsulta($sql, $filtros)
+        {
+            $filtros_palavras = [];
+
+            if (!empty($filtros['categoria'])) {
+                $filtros_palavras[] = 'anuncios.id_categoria = :id_categoria';
+            }
+            if (!empty($filtros['preco'])) {
+                $filtros_palavras[] = 'anuncios.valor BETWEEN :preco1 AND :preco2';
+            }
+            if (!empty($filtros['estado']) || $filtros['estado'] == '0') {
+                $filtros_palavras[] = 'anuncios.estado = :estado';
+            }
+
+            $clausula_where = implode(' AND ', $filtros_palavras);
+
+            if (!empty($clausula_where)) {
+                $sql .= "WHERE $clausula_where";
+            }
+
+            return $sql;
+        }
+
+        private function prepararConsulta($sql, $filtros)
+        {
+            global $pdo;
+
+            $sql = $pdo->prepare($sql);
+
+            if (!empty($filtros['categoria'])) {
+                $sql->bindValue(':id_categoria', $filtros['categoria']);
+            }
+            if (!empty($filtros['preco'])) {
+                $preco = explode('-', $filtros['preco']);
+                $sql->bindValue(':preco1', $preco[0]);
+                $sql->bindValue(':preco2', $preco[1]);
+            }
+            if (!empty($filtros['estado']) || $filtros['estado'] == '0') {
+                $sql->bindValue(':estado', $filtros['estado']);
+            }
+
+            $sql->execute();
+
+            return $sql;
         }
     }
