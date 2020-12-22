@@ -48,4 +48,15 @@
 
             return false;
         }
+
+        public function obterTotalUsuarios()
+        {
+            global $pdo;
+
+            $sql = "SELECT COUNT(*) AS contador FROM usuarios";
+            $sql = $pdo->query($sql);
+            $total = $sql->fetch(PDO::FETCH_OBJ)->contador;
+
+            return $total;
+        }
     }

@@ -2,13 +2,38 @@
 
     class Anuncio
     {
+        public function obterUltimosAnuncios($pagina, $qtd)
+        {
+            global $pdo;
+            $offset = ($pagina - 1) * $qtd;
+            $dados = [];
+
+            $sql = "SELECT 
+                    anuncios.*,
+                    categorias.nome AS categoria,
+                    (SELECT url FROM anuncios_imagens WHERE id_anuncio = anuncios.id LIMIT 1) AS url
+                FROM anuncios
+                INNER JOIN categorias ON categorias.id = anuncios.id_categoria
+                ORDER BY anuncios.id DESC
+                LIMIT $offset, $qtd
+            ";
+            $sql = $pdo->prepare($sql);
+            $sql->execute();
+
+            if ($sql->rowCount() > 0) {
+                $dados = $sql->fetchAll(PDO::FETCH_OBJ);
+            }
+
+            return $dados;
+        }
         public function obterMeusAnuncios()
         {
             global $pdo;
             $dados = [];
 
-            $sql = "SELECT *,
-                (SELECT url FROM anuncios_imagens WHERE id_anuncio = anuncios.id LIMIT 1) AS url
+            $sql = "SELECT
+                    *,
+                    (SELECT url FROM anuncios_imagens WHERE id_anuncio = anuncios.id LIMIT 1) AS url
                 FROM anuncios
                 WHERE id_usuario = :id_usuario
             ";
@@ -39,6 +64,17 @@
             }
 
             return $dado;
+        }
+
+        public function obterTotalAnuncios()
+        {
+            global $pdo;
+
+            $sql = "SELECT COUNT(*) AS contador FROM anuncios";
+            $sql = $pdo->query($sql);
+            $total = $sql->fetch(PDO::FETCH_OBJ)->contador;
+
+            return $total;
         }
 
         public function adicionarAnuncio($titulo, $categoria, $valor, $descricao, $estado)
