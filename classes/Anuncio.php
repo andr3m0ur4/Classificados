@@ -7,8 +7,9 @@
             global $pdo;
             $dados = [];
 
-            $sql = "SELECT anuncios.*, anuncios_imagens.url as url FROM anuncios
-                LEFT JOIN anuncios_imagens ON anuncios_imagens.id_anuncio = anuncios.id
+            $sql = "SELECT *,
+                (SELECT url FROM anuncios_imagens WHERE id_anuncio = anuncios.id LIMIT 1) AS url
+                FROM anuncios
                 WHERE id_usuario = :id_usuario
             ";
             $sql = $pdo->prepare($sql);
@@ -25,7 +26,7 @@
         public function obterAnuncio($id)
         {
             global $pdo;
-            $dado = [];
+            $dado = new stdClass();
 
             $sql = "SELECT * FROM anuncios WHERE id = :id";
             $sql = $pdo->prepare($sql);
@@ -34,6 +35,7 @@
 
             if ($sql->rowCount() > 0) {
                 $dado = $sql->fetch(PDO::FETCH_OBJ);
+                $dado->fotos = $this->obterFotos($id);
             }
 
             return $dado;
@@ -55,7 +57,7 @@
             $sql->execute();
         }
 
-        public function editarAnuncio($titulo, $categoria, $valor, $descricao, $estado, $id)
+        public function editarAnuncio($titulo, $categoria, $valor, $descricao, $estado, $fotos, $id)
         {
             global $pdo;
 
@@ -77,6 +79,10 @@
             $sql->bindValue(':estado', $estado);
             $sql->bindValue(':id', $id);
             $sql->execute();
+
+            if (count($fotos) > 0) {
+                $this->salvarFotos($fotos, $id);
+            }
         }
 
         public function excluirAnuncio($id)
@@ -92,5 +98,88 @@
             $sql = $pdo->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
+        }
+
+        private function salvarFotos($fotos, $id)
+        {
+            for ($i = 0; $i < count($fotos['name']); $i++) {
+                $tipo = $fotos['type'][$i];
+
+                if (in_array($tipo, ['image/jpeg', 'image/png'])) {
+                    $tmpname = md5(time() . rand(0, 9999)) . '.jpg';
+                    $path = "./assets/images/anuncios/{$tmpname}";
+                    move_uploaded_file($fotos['tmp_name'][$i], $path);
+
+                    list($width_original, $height_original) = getimagesize($path);
+                    $ratio = $width_original / $height_original;
+
+                    $width = 500;
+                    $height = 500;
+
+                    if ($width / $height > $ratio) {
+                        $width = $height * $ratio;
+                    } else {
+                        $height = $width / $ratio;
+                    }
+
+                    $image = imagecreatetruecolor($width, $height);
+
+                    if ($tipo == 'image/jpeg') {
+                        $original = imagecreatefromjpeg($path);
+                    } else if ($tipo == 'image/png') {
+                        $original = imagecreatefrompng($path);
+                    }
+
+                    imagecopyresampled($image, $original, 0, 0, 0, 0, $width, $height, $width_original, $height_original);
+
+                    imagejpeg($image, $path, 80);
+
+                    global $pdo;
+                    $sql = "INSERT INTO anuncios_imagens (id_anuncio, url) VALUES (:id_anuncio, :url)";
+                    $sql = $pdo->prepare($sql);
+                    $sql->bindValue(':id_anuncio', $id);
+                    $sql->bindValue(':url', $tmpname);
+                    $sql->execute();
+                }
+            }
+        }
+
+        private function obterFotos($id)
+        {
+            global $pdo;
+            $fotos = new stdClass();
+
+            $sql = "SELECT id, url FROM anuncios_imagens WHERE id_anuncio = :id_anuncio";
+            $sql = $pdo->prepare($sql);
+            $sql->bindValue(':id_anuncio', $id);
+            $sql->execute();
+
+            if ($sql->rowCount() > 0) {
+                $fotos = $sql->fetchAll(PDO::FETCH_OBJ);
+            }
+
+            return $fotos;
+        }
+
+        public function excluirFoto($id)
+        {
+            global $pdo;
+            $id_anuncio = 0;
+
+            $sql = "SELECT id_anuncio FROM anuncios_imagens WHERE id = :id";
+            $sql = $pdo->prepare($sql);
+            $sql->bindValue(':id', $id);
+            $sql->execute();
+
+            if ($sql->rowCount() > 0) {
+                $id_anuncio = $sql->fetch(PDO::FETCH_OBJ)->id_anuncio;
+            }
+
+            $sql = "DELETE FROM anuncios_imagens WHERE id = :id";
+            $sql = $pdo->prepare($sql);
+            $sql->bindValue(':id', $id);
+            $sql->execute();
+
+            return $id_anuncio;
         }
     }

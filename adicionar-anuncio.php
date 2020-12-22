@@ -14,7 +14,7 @@
     if (isset($_POST['titulo']) && !empty($_POST['titulo'])) {
         $titulo = addslashes($_POST['titulo']);
         $categoria = addslashes($_POST['categoria']);
-        $valor = addslashes($_POST['valor']);
+        $valor = doubleval(str_replace(',', '.', addslashes($_POST['valor'])));
         $descricao = addslashes($_POST['descricao']);
         $estado = addslashes($_POST['estado']);
 

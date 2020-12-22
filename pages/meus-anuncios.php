@@ -17,9 +17,9 @@
                 <tr>
                     <td>
                         <?php if (!empty($anuncio->url)) : ?>
-                            <img src="./assets/images/anuncios/<?= $anuncio->url ?>" alt="Foto Anúncio">
+                            <img src="./assets/images/anuncios/<?= $anuncio->url ?>" height="75" alt="Foto Anúncio">
                         <?php else : ?>
-                            <img src="./assets/images/anuncios/default.jpg" height="75" alt="Foto Anúncio">
+                            <img src="./assets/images/default.jpg" height="75" alt="Foto Anúncio">
                         <?php endif ?>
                     </td>
                     <td><?= $anuncio->titulo ?></td>

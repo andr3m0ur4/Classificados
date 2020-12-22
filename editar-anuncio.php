@@ -22,8 +22,13 @@
         $valor = addslashes($_POST['valor']);
         $descricao = addslashes($_POST['descricao']);
         $estado = addslashes($_POST['estado']);
+        $fotos = [];
 
-        $anuncio->editarAnuncio($titulo, $categoria, $valor, $descricao, $estado, $_GET['id']);
+        if (isset($_FILES['fotos'])) {
+            $fotos = $_FILES['fotos'];
+        }
+
+        $anuncio->editarAnuncio($titulo, $categoria, $valor, $descricao, $estado, $fotos, $_GET['id']);
         $sucesso = true;
     }
 

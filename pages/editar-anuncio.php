@@ -39,6 +39,22 @@
                 <option value="2" <?= $dado->estado == 2 ? 'selected' : '' ?>>Ótimo</option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="fotos">Fotos do anúncio:</label>
+            <input type="file" name="fotos[]" id="fotos" class="form-control" multiple>
+
+            <div class="card mt-4">
+                <div class="card-header">Fotos do Anúncio</div>
+                <div class="card-body d-flex">
+                    <?php foreach ($dado->fotos as $foto) : ?>
+                        <div class="foto-item mr-2 text-center">
+                            <img src="./assets/images/anuncios/<?= $foto->url ?>" alt="Foto Anúncio" class="img-fluid img-thumbnail">
+                            <a href="./excluir-foto.php?id=<?= $foto->id ?>" class="btn btn-danger mt-1">Excluir Imagem</a>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        </div>
         <button class="btn btn-outline-dark">Salvar</button>
 
     </form>
