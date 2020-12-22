@@ -53,7 +53,12 @@
             global $pdo;
             $dado = new stdClass();
 
-            $sql = "SELECT * FROM anuncios WHERE id = :id";
+            $sql = "SELECT anuncios.*, categorias.nome AS categoria, usuarios.telefone AS telefone
+                FROM anuncios
+                INNER JOIN categorias ON categorias.id = anuncios.id_categoria
+                INNER JOIN usuarios ON usuarios.id = anuncios.id_usuario
+                WHERE anuncios.id = :id
+            ";
             $sql = $pdo->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
