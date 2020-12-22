@@ -74,7 +74,7 @@
             <ul class="pagination justify-content-center">
                 <?php for ($i = 0; $i < $total_paginas; $i++) : ?>
                     <li class="page-item <?= $pagina == $i + 1 ? 'active' : '' ?>">
-                        <a class="page-link" href="./?p=<?= $i + 1 ?>"><?= $i + 1 ?></a>
+                        <a class="page-link" href="./?<?= construir_search_query($i + 1) ?>"><?= $i + 1 ?></a>
                     </li>
                 <?php endfor ?>
             </ul>

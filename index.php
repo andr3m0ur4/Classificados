@@ -39,3 +39,9 @@
     require './pages/index.php';
 
     require './pages/footer.php';
+
+    function construir_search_query($pagina) {
+        $query = $_GET;
+        $query['p'] = $pagina;
+        return http_build_query($query);
+    }
