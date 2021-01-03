@@ -16,7 +16,14 @@
                 array_shift($url);
 
                 if (isset($url[0]) && !empty($url[0])) {
-                    $currentAction = $url[0];
+                    $currentAction = explode('-', $url[0]);
+
+                    if (count($currentAction) > 1) {
+                        $currentAction = $currentAction[0] . ucfirst($currentAction[1]);
+                    } else {
+                        $currentAction = $currentAction[0];
+                    }
+
                     array_shift($url);
                 } else {
                     $currentAction = 'index';
