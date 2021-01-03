@@ -21,11 +21,11 @@
                 <ul class="nav navbar-nav ml-auto">
                     <?php if (isset($_SESSION['login']) && !empty($_SESSION['login'])) : ?>
                         <li class="navbar-text">( <?= $_SESSION['nome'] ?> )</li>
-                        <li class="nav-item"><a class="nav-link" href="/meus-anuncios.php">Meus Anúncios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/sair.php">Sair</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/anuncios">Meus Anúncios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login/sair">Sair</a></li>
                     <?php else : ?>
-                        <li class="nav-item"><a class="nav-link" href="/cadastre-se.php">Cadastre-se</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login.php">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/cadastrar">Cadastre-se</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                     <?php endif ?>
                 </ul>
             </div>
