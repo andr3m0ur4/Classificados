@@ -11,12 +11,12 @@
         <?php if ($sucesso) : ?>
             <div class="alert alert-success">
                 <strong>Parabéns!</strong> Cadastrado com sucesso.
-                <a href="./login.php" class="alert-link">Faça o login agora</a>
+                <a href="/login" class="alert-link">Faça o login agora</a>
             </div>
         <?php else : ?>
             <div class="alert alert-warning">
                 Este usuário já existe!
-                <a href="./login.php" class="alert-link">Faça o login agora</a>
+                <a href="/login" class="alert-link">Faça o login agora</a>
             </div>
         <?php endif ?>
     <?php endif ?>

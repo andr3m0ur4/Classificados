@@ -1,47 +1,19 @@
 <?php
 
-    require './config.php';
+    session_start();
+    require 'config.php';
 
-    require './classes/Anuncio.php';
-    require './classes/Usuario.php';
-    require './classes/Categoria.php';
-    $anuncio = new Anuncio;
-    $usuario = new Usuario;
-    $categoria = new Categoria;
+    spl_autoload_register(function($class) {
 
-    $filtros = [
-        'categoria' => '',
-        'preco' => '',
-        'estado' => ''
-    ];
+        if (file_exists("controllers/{$class}.php")) {
+            require "controllers/{$class}.php";
+        } else if (file_exists("models/{$class}.php")) {
+            require "models/{$class}.php";
+        } else if (file_exists("core/{$class}.php")) {
+            require "core/{$class}.php";
+        }
 
-    if (isset($_GET['filtros'])) {
-        $filtros = $_GET['filtros'];
-    }
+    });
 
-    $total_anuncios = $anuncio->obterTotalAnuncios($filtros);
-    $total_usuarios = $usuario->obterTotalUsuarios();
-
-    $pagina = 1;
-
-    if (isset($_GET['p']) && !empty($_GET['p'])) {
-        $pagina = addslashes($_GET['p']);
-    }
-    $qtd_itens = 4;
-    $total_paginas = ceil($total_anuncios / $qtd_itens);
-
-    $anuncios = $anuncio->obterUltimosAnuncios($pagina, $qtd_itens, $filtros);
-
-    $categorias = $categoria->obterLista();
-
-    require './pages/header.php';
-
-    require './pages/index.php';
-
-    require './pages/footer.php';
-
-    function construir_search_query($pagina) {
-        $query = $_GET;
-        $query['p'] = $pagina;
-        return http_build_query($query);
-    }
+    $core = new Core;
+    $core->run();

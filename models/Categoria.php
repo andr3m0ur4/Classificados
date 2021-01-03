@@ -1,14 +1,13 @@
 <?php
 
-    class Categoria
+    class Categoria extends Model
     {
         public function obterLista()
         {
-            global $pdo;
             $dados = [];
 
             $sql = "SELECT * FROM categorias";
-            $sql = $pdo->query($sql);
+            $sql = $this->db->query($sql);
 
             if ($sql->rowCount() > 0) {
                 $dados = $sql->fetchAll(PDO::FETCH_OBJ);

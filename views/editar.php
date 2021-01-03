@@ -48,8 +48,8 @@
                 <div class="card-body d-flex">
                     <?php foreach ($dado->fotos as $foto) : ?>
                         <div class="foto-item mr-2 text-center">
-                            <img src="./assets/images/anuncios/<?= $foto->url ?>" alt="Foto Anúncio" class="img-fluid img-thumbnail">
-                            <a href="./excluir-foto.php?id=<?= $foto->id ?>" class="btn btn-danger mt-1">Excluir Imagem</a>
+                            <img src="/assets/images/anuncios/<?= $foto->url ?>" alt="Foto Anúncio" class="img-fluid img-thumbnail">
+                            <a href="/anuncios/excluir-foto/<?= $foto->id ?>" class="btn btn-danger mt-1">Excluir Imagem</a>
                         </div>
                     <?php endforeach ?>
                 </div>

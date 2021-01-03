@@ -56,13 +56,13 @@
                         <tr>
                             <td>
                                 <?php if (!empty($anuncio->url)) : ?>
-                                    <img src="./assets/images/anuncios/<?= $anuncio->url ?>" height="75" alt="Foto Anúncio">
+                                    <img src="/assets/images/anuncios/<?= $anuncio->url ?>" height="75" alt="Foto Anúncio">
                                 <?php else : ?>
-                                    <img src="./assets/images/default.jpg" height="75" alt="Foto Anúncio">
+                                    <img src="/assets/images/default.jpg" height="75" alt="Foto Anúncio">
                                 <?php endif ?>
                             </td>
                             <td>
-                                <a href="./produto.php?id=<?= $anuncio->id ?>"><?= $anuncio->titulo?></a>
+                                <a href="/produto/abrir/<?= $anuncio->id ?>"><?= $anuncio->titulo?></a>
                                 <span class="d-block"><?= $anuncio->categoria ?></span>
                             </td>
                             <td>R$ <?= number_format($anuncio->valor, 2) ?></td>
@@ -74,7 +74,7 @@
             <ul class="pagination justify-content-center">
                 <?php for ($i = 0; $i < $total_paginas; $i++) : ?>
                     <li class="page-item <?= $pagina == $i + 1 ? 'active' : '' ?>">
-                        <a class="page-link" href="./?<?= construir_search_query($i + 1) ?>"><?= $i + 1 ?></a>
+                        <a class="page-link" href="/?<?= $this->construirSearchQuery($i + 1) ?>"><?= $i + 1 ?></a>
                     </li>
                 <?php endfor ?>
             </ul>

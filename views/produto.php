@@ -7,11 +7,11 @@
                     <?php if (count((array) $dado->fotos) > 0) : ?>
                         <?php foreach ($dado->fotos as $chave => $foto) : ?>
                             <div class="carousel-item <?= $chave == 0 ? 'active' : '' ?>">
-                                <img src="./assets/images/anuncios/<?= $foto->url ?>" alt="Foto Anúncio" class="d-block w-100">
+                                <img src="/assets/images/anuncios/<?= $foto->url ?>" alt="Foto Anúncio" class="d-block w-100">
                             </div>
                         <?php endforeach ?>
                     <?php else : ?>
-                        <img src="./assets/images/default.jpg" alt="Foto Default" class="d-block w-100">
+                        <img src="/assets/images/default.jpg" alt="Foto Default" class="d-block w-100">
                     <?php endif ?>
                 </div>
                 <a href="#carousel" class="carousel-control-prev" role="button" data-slide="prev">

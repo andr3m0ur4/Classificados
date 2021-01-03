@@ -1,6 +1,6 @@
 <?php
 
-    class Anuncio
+    class Anuncio extends Model
     {
         public function obterUltimosAnuncios($pagina, $qtd, $filtros)
         {
@@ -30,7 +30,6 @@
 
         public function obterMeusAnuncios()
         {
-            global $pdo;
             $dados = [];
 
             $sql = "SELECT
@@ -39,7 +38,7 @@
                 FROM anuncios
                 WHERE id_usuario = :id_usuario
             ";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id_usuario', $_SESSION['login']);
             $sql->execute();
 
@@ -52,7 +51,6 @@
 
         public function obterAnuncio($id)
         {
-            global $pdo;
             $dado = new stdClass();
 
             $sql = "SELECT anuncios.*, categorias.nome AS categoria, usuarios.telefone AS telefone
@@ -61,7 +59,7 @@
                 INNER JOIN usuarios ON usuarios.id = anuncios.id_usuario
                 WHERE anuncios.id = :id
             ";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
 
@@ -75,8 +73,6 @@
 
         public function obterTotalAnuncios($filtros)
         {
-            global $pdo;
-
             $sql = "SELECT COUNT(*) AS contador FROM anuncios ";
             $sql = $this->construirConsulta($sql, $filtros);
             $sql = $this->prepararConsulta($sql, $filtros);
@@ -87,11 +83,9 @@
 
         public function adicionarAnuncio($titulo, $categoria, $valor, $descricao, $estado)
         {
-            global $pdo;
-
             $sql = "INSERT INTO anuncios (titulo, id_categoria, id_usuario, descricao, valor, estado)
                 VALUES (:titulo, :id_categoria, :id_usuario, :descricao, :valor, :estado)";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':titulo', $titulo);
             $sql->bindValue(':id_categoria', $categoria);
             $sql->bindValue(':id_usuario', $_SESSION['login']);
@@ -103,8 +97,6 @@
 
         public function editarAnuncio($titulo, $categoria, $valor, $descricao, $estado, $fotos, $id)
         {
-            global $pdo;
-
             $sql = "UPDATE anuncios SET
                     titulo = :titulo,
                     id_categoria = :id_categoria,
@@ -114,7 +106,7 @@
                     estado = :estado
                 WHERE id = :id
             ";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':titulo', $titulo);
             $sql->bindValue(':id_categoria', $categoria);
             $sql->bindValue(':id_usuario', $_SESSION['login']);
@@ -131,15 +123,13 @@
 
         public function excluirAnuncio($id)
         {
-            global $pdo;
-
             $sql = "DELETE FROM anuncios_imagens WHERE id_anuncio = :id_anuncio";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id_anuncio', $id);
             $sql->execute();
 
             $sql = "DELETE FROM anuncios WHERE id = :id";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
         }
@@ -177,10 +167,9 @@
                     imagecopyresampled($image, $original, 0, 0, 0, 0, $width, $height, $width_original, $height_original);
 
                     imagejpeg($image, $path, 80);
-
-                    global $pdo;
+                    
                     $sql = "INSERT INTO anuncios_imagens (id_anuncio, url) VALUES (:id_anuncio, :url)";
-                    $sql = $pdo->prepare($sql);
+                    $sql = $this->db->prepare($sql);
                     $sql->bindValue(':id_anuncio', $id);
                     $sql->bindValue(':url', $tmpname);
                     $sql->execute();
@@ -190,11 +179,10 @@
 
         private function obterFotos($id)
         {
-            global $pdo;
             $fotos = new stdClass();
 
             $sql = "SELECT id, url FROM anuncios_imagens WHERE id_anuncio = :id_anuncio";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id_anuncio', $id);
             $sql->execute();
 
@@ -207,11 +195,10 @@
 
         public function excluirFoto($id)
         {
-            global $pdo;
             $id_anuncio = 0;
 
             $sql = "SELECT id_anuncio FROM anuncios_imagens WHERE id = :id";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
 
@@ -220,7 +207,7 @@
             }
 
             $sql = "DELETE FROM anuncios_imagens WHERE id = :id";
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
             $sql->bindValue(':id', $id);
             $sql->execute();
 
@@ -252,9 +239,7 @@
 
         private function prepararConsulta($sql, $filtros)
         {
-            global $pdo;
-
-            $sql = $pdo->prepare($sql);
+            $sql = $this->db->prepare($sql);
 
             if (!empty($filtros['categoria'])) {
                 $sql->bindValue(':id_categoria', $filtros['categoria']);
